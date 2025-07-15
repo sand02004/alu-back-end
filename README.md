@@ -1,1 +1,2 @@
-Building Api
+Gathering data from api
+
