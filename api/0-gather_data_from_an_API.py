@@ -19,7 +19,7 @@ if __name__ == "__main__":
     for user in users:
         if user.get("id") == employee_Id:
             employee_name = user.get("name")
-    # filter completed tasks
+    # filter completed task
     done = []
     total = 0
     completed = 0
