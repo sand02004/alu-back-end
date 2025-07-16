@@ -28,12 +28,10 @@ def count_words(subreddit, word_list, word_count={}, after=None):
                 if count > 0:
                     word_count[word] = word_count.get(word, 0) + count
 
-        # Check if there's another page
         after = data.get('after')
         if after is not None:
             return count_words(subreddit, word_list, word_count, after)
 
-        # Done: print the results
         if word_count:
             for word in sorted(word_count.items(), key=lambda item: (-item[1], item[0])):
                 print(f"{word[0]}: {word[1]}")
