@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 """Module for querying subreddit subscriber count using Reddit API"""
-import requests
-#defining number of subscribers
 
+import requests
+
+
+# Defining number of subscribers
 def number_of_subscribers(subreddit):
     """Returns the number of subscribers for a given subreddit"""
     if not isinstance(subreddit, str):
