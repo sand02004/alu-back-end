@@ -1,11 +1,15 @@
 #!/usr/bin/python3
-"""Recursive function to count words in hot Reddit posts"""
+"""
+This module recursively queries the Reddit API, parses the titles of hot
+articles for a given subreddit, and prints the count of specified keywords.
+"""
+
 import requests
 
 
-def count_words(subreddit, word_list, word_count={}, after=None):
-    """Counts keywords recursively in the titles of hot posts"""
-    if after is None:
+def count_words(subreddit, word_list, word_count=None, after=None):
+    """Recursively counts keywords in the titles of hot Reddit posts"""
+    if word_count is None:
         word_count = {}
         word_list = [word.lower() for word in word_list]
 
@@ -14,7 +18,8 @@ def count_words(subreddit, word_list, word_count={}, after=None):
     params = {'limit': 100, 'after': after}
 
     try:
-        response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+        response = requests.get(
+            url, headers=headers, params=params, allow_redirects=False)
         if response.status_code != 200:
             return
 
@@ -24,17 +29,15 @@ def count_words(subreddit, word_list, word_count={}, after=None):
         for post in posts:
             title_words = post.get('data', {}).get('title', '').lower().split()
             for word in word_list:
-                count = title_words.count(word)
-                if count > 0:
-                    word_count[word] = word_count.get(word, 0) + count
+                word_count[word] = word_count.get(word, 0) + title_words.count(word)
 
         after = data.get('after')
         if after is not None:
             return count_words(subreddit, word_list, word_count, after)
 
-        if word_count:
-            for word in sorted(word_count.items(), key=lambda item: (-item[1], item[0])):
-                print(f"{word[0]}: {word[1]}")
+        filtered = {k: v for k, v in word_count.items() if v > 0}
+        for word, count in sorted(filtered.items(), key=lambda x: (-x[1], x[0])):
+            print(f"{word}: {count}")
 
     except requests.RequestException:
         return
